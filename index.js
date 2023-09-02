@@ -1,4 +1,4 @@
-const serverPort = 80;
+const serverPort = 5000;
 const dbUrl = 'mongodb+srv://admin:TvyoPh4fSjE0tgAP@cluster0.qvainjk.mongodb.net/game?retryWrites=true&w=majority';
 
 const express = require('express');
