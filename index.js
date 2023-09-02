@@ -22,7 +22,7 @@ app.post('/signup', function(request, response)
     response.send("Signed up");
 });
 
-app.listen(serverPort, function()
+app.listen(process.env.PORT || port, function()
 {
     console.log("Server started on " + serverPort + " port");
 });
