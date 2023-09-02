@@ -16,6 +16,13 @@ const Schema = mongoose.Schema;
 const userScheme = new Schema({name: String, password: String, email: String}, {versionKey: false});
 const User = mongoose.model("User", userScheme);
 
+// Init crypto
+const crypto = require('crypto');
+
+function md5(content) {  
+    return crypto.createHash('md5').update(content).digest('hex')
+  }
+
 // Main body
 async function main() {
     mongoose.connect(dbUrl)
@@ -44,23 +51,21 @@ app.post('/sign-in-id', async function(request, response)
     console.log(request.body);
 
     const userId = request.body.id;
-    const userPassword = request.body.password;
+    var userPassword = request.body.password;
 
-    if(!userId || !userPassword)
-    {
+    if(!userId || !userPassword) {
         response.sendStatus(400);
         return;
     }
 
+    userPassword = md5(userPassword);
+
     const user = await User.findById(userId);
-    if(user) 
-    {
-        if(user['password'] && user['password'] === userPassword)
-        {
+    if(user) {
+        if(user['password'] && user['password'] === userPassword) {
             response.send({ success: 1 });
         }
-        else
-        {
+        else {
             response.send({ success: 0 });
         }
     }
@@ -73,23 +78,21 @@ app.post('/sign-in-email', async function(request, response)
     console.log(request.body);
 
     const userEmail = request.body.email;
-    const userPassword = request.body.password;
+    var userPassword = request.body.password;
 
-    if(!userEmail || !userPassword)
-    {
+    if(!userEmail || !userPassword) {
         response.sendStatus(400);
         return;
     }
 
+    userPassword = md5(userPassword);
+
     const user = await User.find({ email: userEmail });
-    if(user.length > 0) 
-    {
-        if(user[0]['password'] && user[0]['password'] === userPassword)
-        {
+    if(user.length > 0) {
+        if(user[0]['password'] && user[0]['password'] === userPassword) {
             response.send({ success: 1 });
         }
-        else
-        {
+        else {
             response.send({ success: 0 });
         }
     }
@@ -102,18 +105,18 @@ app.post('/sign-up', async function(request, response)
     console.log(request.body);
 
     const userName = request.body.name;
-    const userPassword = request.body.password;
+    var userPassword = request.body.password;
     const userEmail = request.body.email;
 
-    if(!userName || !userPassword || !userEmail)
-    {
+    if(!userName || !userPassword || !userEmail) {
         response.sendStatus(400);
         return;
     }
 
+    userPassword = md5(userPassword);
+
     const checkUser = await User.find({ email: userEmail });
-    if(checkUser.length > 0) 
-    {
+    if(checkUser.length > 0) {
         response.sendStatus(409);
         return;
     }
