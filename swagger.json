@@ -1,0 +1,158 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "Authorization backend",
+      "version": "1.0.0",
+      "description": "Authorization backend server app for games.\n"
+    },
+    "servers": [
+      {
+        "url": "https://cerulean-dolphin-sari.cyclic.app/"
+      },
+      {
+        "url": "localhost:5000/"
+      }
+    ],
+    "paths": {
+      "/sign-up": {
+        "post": {
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Create user account",
+          "description": "Create user account",
+          "operationId": "sign-up",
+          "requestBody": {
+            "description": "User name, password and email",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUp"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "Invalid input"
+            },
+            "409": {
+              "description": "Email already used"
+            }
+          }
+        }
+      },
+      "/sign-in-email": {
+        "post": {
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Sign In using email and password",
+          "description": "Sign In using email and password",
+          "operationId": "sign-in-email",
+          "requestBody": {
+            "description": "User email and password",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInEmail"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "Invalid input"
+            },
+            "404": {
+              "description": "User not found"
+            }
+          }
+        }
+      },
+      "/sign-in-id": {
+        "post": {
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Sign In using id and password",
+          "description": "Sign In id email and password",
+          "operationId": "sign-in-id",
+          "requestBody": {
+            "description": "User id and password",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInId"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "Invalid input"
+            },
+            "404": {
+              "description": "User not found"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "SignUp": {
+          "required": [
+            "name",
+            "password",
+            "email"
+          ],
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        },
+        "SignInEmail": {
+          "required": [
+            "email",
+            "password"
+          ],
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "SignInId": {
+          "required": [
+            "id",
+            "password"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }

@@ -8,12 +8,43 @@ const app = express();
 
 // Init Body parsing
 const bodyParser = require('body-parser');
+app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.raw({ extended: true }));
+
+// Init JWT
+const jwt = require('jsonwebtoken');
+const accessTokenSecret = '_p=$%4-X-i!5p*lgdQbFmVBtmn=mxPC*jz6K$7$GAcw$bmcOcYJd8OOwJ*xDkv=n';
+
+const authenticateJWT = (request, response, next) => {
+    const authHeader = request.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+
+        jwt.verify(token, accessTokenSecret, (error, user) => {
+            if (error) {
+                return response.status(403).json({
+                    message: "No access!"
+                });
+            }
+
+            request.user = user;
+
+            console.log("Authorized request from " + request.user.id);
+            next();
+        });
+    } else {
+        response.status(401).json({
+            message: "No authorization header!"
+        });
+    }
+};
 
 // Init Mongoose
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const userScheme = new Schema({name: String, password: String, email: String}, {versionKey: false});
+const userScheme = new Schema({name: String, email: String, password: String}, {versionKey: false});
 const User = mongoose.model("User", userScheme);
 
 // Init crypto
@@ -33,20 +64,17 @@ async function main() {
     {
         console.log("Server started on " + (process.env.PORT || serverPort) + " port");
     });
-}
+};
 // Main body
 
+//Swagger Docs
+const swaggerUI = require('swagger-ui-express');
+const swaggerDoc = require('./swagger.json');
+
+app.use('/api', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+
 // Requests bind
-app.get('/', async function(request, response)
-{
-    console.log(request.url);
-
-    const users = await User.find({});
-    response.send(users);
-});
-
-app.post('/sign-in-id', async function(request, response)
-{
+app.post('/sign-in-id', async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -54,7 +82,9 @@ app.post('/sign-in-id', async function(request, response)
     var userPassword = request.body.password;
 
     if(!userId || !userPassword) {
-        response.sendStatus(400);
+        response.status(400).json({
+            message: "No id or password field in request!"
+        });
         return;
     }
 
@@ -63,17 +93,27 @@ app.post('/sign-in-id', async function(request, response)
     const user = await User.findById(userId);
     if(user) {
         if(user['password'] && user['password'] === userPassword) {
-            response.send({ success: 1 });
+            const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
+
+            response.status(200).json({
+                accessToken: accessToken,
+                message: "Successful signed in!"
+            });
         }
         else {
-            response.send({ success: 0 });
+            response.status(401).json({
+                message: "Invalid password!"
+            });
         }
     }
-    else response.sendStatus(404);
+    else {
+        response.status(404).json({
+            message: "User not found!"
+        });
+    }
 });
 
-app.post('/sign-in-email', async function(request, response)
-{
+app.post('/sign-in-email', async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -81,7 +121,9 @@ app.post('/sign-in-email', async function(request, response)
     var userPassword = request.body.password;
 
     if(!userEmail || !userPassword) {
-        response.sendStatus(400);
+        response.status(400).json({
+            message: "No email or password field in request!"
+        });
         return;
     }
 
@@ -90,26 +132,38 @@ app.post('/sign-in-email', async function(request, response)
     const user = await User.find({ email: userEmail });
     if(user.length > 0) {
         if(user[0]['password'] && user[0]['password'] === userPassword) {
-            response.send({ success: 1 });
+            const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
+
+            response.status(200).json({
+                accessToken: accessToken,
+                message: "Successful signed in!"
+            });
         }
         else {
-            response.send({ success: 0 });
+            response.status(401).json({
+                message: "Invalid password!"
+            });
         }
     }
-    else response.sendStatus(404);
+    else {
+        response.status(404).json({
+            message: "User not found!"
+        });
+    }
 });
 
-app.post('/sign-up', async function(request, response)
-{
+app.post('/sign-up', async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
     const userName = request.body.name;
-    var userPassword = request.body.password;
     const userEmail = request.body.email;
+    var userPassword = request.body.password;
 
     if(!userName || !userPassword || !userEmail) {
-        response.sendStatus(400);
+        response.status(400).json({
+            message: "No name or email or password field in request!"
+        });
         return;
     }
 
@@ -117,15 +171,47 @@ app.post('/sign-up', async function(request, response)
 
     const checkUser = await User.find({ email: userEmail });
     if(checkUser.length > 0) {
-        response.sendStatus(409);
+        response.status(409).json({
+            message: "Email already used!"
+        });
         return;
     }
 
-    const user = new User({ name: userName, password: userPassword, email: userEmail });
+    const user = new User({ name: userName, email: userEmail, password: userPassword });
 
     await user.save();
-    response.send(user._id);
+    response.status(200).json({
+        id: user._id,
+        message: "Successful signed up!"
+    });
 });
+
+app.post('/get-name', authenticateJWT, async function(request, response) {
+    console.log(request.url);
+    console.log(request.body);
+
+    const id = request.body.id;
+
+    if(!id) {
+        response.status(400).json({
+            message: "No id field in request!"
+        });
+        return;
+    }
+
+    const user = await User.findById(id);
+    if(user) {
+        response.status(200).json( {
+            name: user.name,
+            message: "Name got!"
+        });
+    }
+    else {
+        response.status(404).json({
+            message: "User not found!"
+        });
+    }
+})
 
 // Server start
 main();
