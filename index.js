@@ -43,16 +43,20 @@ const authenticateJWT = (request, response, next) => {
 
 // Init Mongoose
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const userScheme = new Schema({name: String, email: String, password: String}, {versionKey: false});
-const User = mongoose.model("User", userScheme);
+const User = require('./src/models/user.js');
 
 // Init crypto
 const crypto = require('crypto');
 
 function md5(content) {  
-    return crypto.createHash('md5').update(content).digest('hex')
-  }
+    return crypto.createHash('md5').update(content).digest('hex');
+};
+
+//Swagger Docs
+const swaggerUI = require('swagger-ui-express');
+const swaggerDoc = require('./src/swagger.json');
+
+app.use('/api', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 // Main body
 async function main() {
@@ -66,12 +70,6 @@ async function main() {
     });
 };
 // Main body
-
-//Swagger Docs
-const swaggerUI = require('swagger-ui-express');
-const swaggerDoc = require('./swagger.json');
-
-app.use('/api', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 // Requests bind
 app.post('/sign-in-id', async function(request, response) {
@@ -211,7 +209,7 @@ app.post('/get-name', authenticateJWT, async function(request, response) {
             message: "User not found!"
         });
     }
-})
+});
 
 // Server start
 main();
