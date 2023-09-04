@@ -72,7 +72,7 @@ async function main() {
 // Main body
 
 // Requests bind
-app.post('/sign-in-id', async function(request, response) {
+app.post('/user/auth/sign-in-id', async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -90,7 +90,7 @@ app.post('/sign-in-id', async function(request, response) {
 
     const user = await User.findById(userId);
     if(user) {
-        if(user['password'] && user['password'] === userPassword) {
+        if(user.password && user.password === userPassword) {
             const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
 
             response.status(200).json({
@@ -111,7 +111,7 @@ app.post('/sign-in-id', async function(request, response) {
     }
 });
 
-app.post('/sign-in-email', async function(request, response) {
+app.post('/user/auth/sign-in-email', async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -129,7 +129,7 @@ app.post('/sign-in-email', async function(request, response) {
 
     const user = await User.find({ email: userEmail });
     if(user.length > 0) {
-        if(user[0]['password'] && user[0]['password'] === userPassword) {
+        if(user[0].password && user[0].password === userPassword) {
             const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
 
             response.status(200).json({
@@ -150,7 +150,7 @@ app.post('/sign-in-email', async function(request, response) {
     }
 });
 
-app.post('/sign-up', async function(request, response) {
+app.post('/user/auth/sign-up', async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -184,7 +184,7 @@ app.post('/sign-up', async function(request, response) {
     });
 });
 
-app.post('/get-name', authenticateJWT, async function(request, response) {
+app.post('/user/get-name', authenticateJWT, async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -203,6 +203,64 @@ app.post('/get-name', authenticateJWT, async function(request, response) {
             name: user.name,
             message: "Name got!"
         });
+    }
+    else {
+        response.status(404).json({
+            message: "User not found!"
+        });
+    }
+});
+
+app.post('/user/auth/reset-password', authenticateJWT, async function(request, response) {
+    console.log(request.url);
+    console.log(request.body);
+
+    const id = request.body.id;
+    var oldPassword = request.body.oldPassword;
+    var newPassword = request.body.newPassword;
+
+    if(!id || !oldPassword || !newPassword) {
+        response.status(400).json({
+            message: "No id or oldPassword or newPassword field in request!"
+        });
+        return;
+    }
+
+    oldPassword = md5(oldPassword);
+    newPassword = md5(newPassword);
+
+    if(!(request.user.id === id)) {
+        response.status(403).json({
+            message: "You don't have permission to access!"
+        });
+        return;
+    }
+
+    const user = await User.findById(id);
+    if(user) {
+        if(user.password && user.password === oldPassword) {
+            if(oldPassword === newPassword) {
+                response.status(409).json({
+                    message: "New password equals old!"
+                });
+                return;
+            }
+
+            user.password = newPassword;
+            await user.save();
+
+            const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
+
+            response.status(200).json({
+                accessToken: accessToken,
+                message: "Password successful changed!"
+            });
+        }
+        else {
+            response.status(401).json({
+                message: "Invalid current password!"
+            });
+        }
     }
     else {
         response.status(404).json({
