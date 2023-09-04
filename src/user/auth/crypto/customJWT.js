@@ -17,7 +17,7 @@ class customJWT
             const token = authHeader.split(' ')[1];
 
             jwt.verify(token, accessTokenSecret, (error, user) => {
-                if (error) {
+                if (error || !user || !user.id) {
                     return response.status(403).json({
                         message: "No access!"
                     });
@@ -36,8 +36,8 @@ class customJWT
     };
 
     // JWT sign
-    static sign(data) {
-        return jwt.sign(data, accessTokenSecret);
+    static sign(id) {
+        return jwt.sign({ id: id}, accessTokenSecret);
     };
 };
 
