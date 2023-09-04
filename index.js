@@ -13,37 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw({ extended: true }));
 
 // Init JWT
-const jwt = require('jsonwebtoken');
-const accessTokenSecret = '_p=$%4-X-i!5p*lgdQbFmVBtmn=mxPC*jz6K$7$GAcw$bmcOcYJd8OOwJ*xDkv=n';
-
-const authenticateJWT = (request, response, next) => {
-    const authHeader = request.headers.authorization;
-
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-
-        jwt.verify(token, accessTokenSecret, (error, user) => {
-            if (error) {
-                return response.status(403).json({
-                    message: "No access!"
-                });
-            }
-
-            request.user = user;
-
-            console.log("Authorized request from " + request.user.id);
-            next();
-        });
-    } else {
-        response.status(401).json({
-            message: "No authorization header!"
-        });
-    }
-};
+const customJWT = require('./src/user/auth/customJWT.js');
 
 // Init Mongoose
 const mongoose = require('mongoose');
-const User = require('./src/models/user.js');
+const User = require('./src/user/models/user.js');
 
 // Init crypto
 const crypto = require('crypto');
@@ -91,7 +65,7 @@ app.post('/user/auth/sign-in-id', async function(request, response) {
     const user = await User.findById(userId);
     if(user) {
         if(user.password && user.password === userPassword) {
-            const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
+            const accessToken = customJWT.sign({ id: user._id });
 
             response.status(200).json({
                 accessToken: accessToken,
@@ -130,7 +104,7 @@ app.post('/user/auth/sign-in-email', async function(request, response) {
     const user = await User.find({ email: userEmail });
     if(user.length > 0) {
         if(user[0].password && user[0].password === userPassword) {
-            const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
+            const accessToken = customJWT.sign({ id: user._id });
 
             response.status(200).json({
                 accessToken: accessToken,
@@ -184,7 +158,7 @@ app.post('/user/auth/sign-up', async function(request, response) {
     });
 });
 
-app.post('/user/get-name', authenticateJWT, async function(request, response) {
+app.post('/user/get-name', customJWT.authenticateJWT, async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -211,7 +185,7 @@ app.post('/user/get-name', authenticateJWT, async function(request, response) {
     }
 });
 
-app.post('/user/auth/reset-password', authenticateJWT, async function(request, response) {
+app.post('/user/auth/reset-password', customJWT.authenticateJWT, async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
@@ -249,7 +223,7 @@ app.post('/user/auth/reset-password', authenticateJWT, async function(request, r
             user.password = newPassword;
             await user.save();
 
-            const accessToken = jwt.sign({ id: user._id }, accessTokenSecret);
+            const accessToken = customJWT.sign({ id: user._id });
 
             response.status(200).json({
                 accessToken: accessToken,
