@@ -31,7 +31,7 @@ const signUp = async function(request, response) {
         return;
     }
 
-    const user = await User.findById(request.user.id);
+    const user = await User.findById(request.session.id);
     if(user) {
         if(user.accountType != 0)
         {

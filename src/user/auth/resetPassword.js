@@ -24,7 +24,7 @@ const resetPassword = async function(request, response) {
     oldPassword = customMD5(oldPassword);
     newPassword = customMD5(newPassword);
 
-    if(!(request.user.id === userId)) {
+    if(!(request.session.id === userId)) {
         response.status(403).json({
             message: "You don't have permission to access!"
         });
