@@ -17,7 +17,6 @@ const customJWT = require('./src/user/auth/crypto/customJWT.js');
 
 // Init Mongoose
 const mongoose = require('mongoose');
-const User = require('./src/user/models/user.js');
 
 //Swagger Docs
 const swaggerUI = require('swagger-ui-express');

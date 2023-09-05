@@ -10,11 +10,11 @@ const resetPassword = async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
-    const id = request.body.id;
+    const userId = request.body.id;
     var oldPassword = request.body.oldPassword;
     var newPassword = request.body.newPassword;
 
-    if(!id || !oldPassword || !newPassword) {
+    if(!userId || !oldPassword || !newPassword) {
         response.status(400).json({
             message: "No id or oldPassword or newPassword field in request!"
         });
@@ -24,17 +24,22 @@ const resetPassword = async function(request, response) {
     oldPassword = customMD5(oldPassword);
     newPassword = customMD5(newPassword);
 
-    if(!(request.user.id === id)) {
-        console.log(request.user.id);
-        console.log(id);
+    if(!(request.user.id === userId)) {
         response.status(403).json({
             message: "You don't have permission to access!"
         });
         return;
     }
 
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
     if(user) {
+        if(user.accountType == 0) {
+            response.status(403).json({
+                message: "No access, can't reset password for guest account!"
+            });
+            return;
+        }
+
         if(user.password && user.password === oldPassword) {
             if(oldPassword === newPassword) {
                 response.status(409).json({
