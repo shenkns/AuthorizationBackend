@@ -22,9 +22,9 @@ const signInEmail = async function(request, response) {
 
     userPassword = customMD5(userPassword);
 
-    const user = await User.find({ email: userEmail });
-    if(user.length > 0) {
-        if(user[0].password && user[0].password === userPassword) {
+    const user = await User.findOne({ email: userEmail });
+    if(user) {
+        if(user.password && user.password === userPassword) {
             const accessToken = customJWT.sign(user._id);
 
             response.status(200).json({
