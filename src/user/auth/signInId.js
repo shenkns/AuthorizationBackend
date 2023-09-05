@@ -24,6 +24,13 @@ const signInId = async function(request, response) {
 
     const user = await User.findById(userId);
     if(user) {
+        if(user.accountType == 0) {
+            response.status(403).json({
+                message: "No access, can't sign in to guest account with user ID!"
+            });
+            return;
+        }
+
         if(user.password && user.password === userPassword) {
             const accessToken = customJWT.sign(user._id);
 

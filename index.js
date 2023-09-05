@@ -39,14 +39,17 @@ async function main() {
 // Main body
 
 // Requests bind
+const signInGuest = require('./src/user/auth/signInGuest.js');
+app.post('/user/auth/sign-in-guest', signInGuest);
+
 const signUp = require('./src/user/auth/signUp.js');
-app.post('/user/auth/sign-up', signUp);
+app.post('/user/auth/sign-up', customJWT.authenticateJWT, signUp);
 
 const signInId = require('./src/user/auth/signInId.js');
-app.post('/user/auth/sign-in-id', signInId);
+app.post('/user/auth/sign-in-id', customJWT.authenticateJWT, signInId);
 
 const signInEmail = require('./src/user/auth/signInEmail.js');
-app.post('/user/auth/sign-in-email', signInEmail);
+app.post('/user/auth/sign-in-email', customJWT.authenticateJWT, signInEmail);
 
 const resetPassword = require('./src/user/auth/resetPassword.js');
 app.post('/user/auth/reset-password', customJWT.authenticateJWT, resetPassword);

@@ -24,6 +24,13 @@ const signInEmail = async function(request, response) {
 
     const user = await User.findOne({ email: userEmail });
     if(user) {
+        if(user.accountType == 0) {
+            response.status(403).json({
+                message: "No access, can't sign in to guest account with email!"
+            });
+            return;
+        }
+
         if(user.password && user.password === userPassword) {
             const accessToken = customJWT.sign(user._id);
 

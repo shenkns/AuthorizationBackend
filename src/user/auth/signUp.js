@@ -12,10 +12,11 @@ const signUp = async function(request, response) {
     const userName = request.body.name;
     const userEmail = request.body.email;
     var userPassword = request.body.password;
+    const userDeviceId = request.body.deviceId;
 
-    if(!userName || !userPassword || !userEmail) {
+    if(!userName || !userEmail || !userPassword || !userDeviceId) {
         response.status(400).json({
-            message: "No name or email or password field in request!"
+            message: "No name or email or password or deviceId field in request!"
         });
         return;
     }
@@ -30,7 +31,7 @@ const signUp = async function(request, response) {
         return;
     }
 
-    const user = new User({ name: userName, email: userEmail, password: userPassword });
+    const user = new User({ name: userName, email: userEmail, password: userPassword, accountType: 1, deviceId: userDeviceId });
 
     await user.save();
     response.status(200).json({
