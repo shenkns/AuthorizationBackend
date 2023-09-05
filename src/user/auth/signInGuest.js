@@ -38,7 +38,7 @@ const signInGuest = async function(request, response) {
         return;
     }
 
-    var user = new User({ name: "Player1234", accountType: 0, deviceId: userDeviceId });
+    user = new User({ name: "Player1234", accountType: 0, deviceId: userDeviceId });
 
     await user.save();
 

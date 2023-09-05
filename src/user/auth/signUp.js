@@ -23,21 +23,48 @@ const signUp = async function(request, response) {
 
     userPassword = customMD5(userPassword);
 
-    const checkUser = await User.find({ email: userEmail });
-    if(checkUser.length > 0) {
+    const checkUser = await User.findOne({ email: userEmail });
+    if(checkUser) {
         response.status(409).json({
             message: "Email already used!"
         });
         return;
     }
 
-    const user = new User({ name: userName, email: userEmail, password: userPassword, accountType: 1, deviceId: userDeviceId });
+    const user = await User.findById(request.user.id);
+    if(user) {
+        if(user.accountType != 0)
+        {
+            response.status(409).json({
+                message: "Failed to sign up, account already signed up!"
+            });
+            return;
+        }
 
-    await user.save();
-    response.status(200).json({
-        id: user._id,
-        message: "Successful signed up!"
-    });
+        if(!(user.deviceId === userDeviceId)) {
+            response.status(403).json({
+                message: "Failed to sign up, attempt from not owning device"
+            });
+            return;
+        }
+
+        user.accountType = 1;
+
+        user.name = userName;
+        user.email = userEmail;
+        user.password = userPassword;
+
+        await user.save();
+        response.status(200).json({
+            id: user._id,
+            message: "Successful signed up!"
+        });
+    }
+    else {
+        response.status(404).json({
+            message: "Current guest user session not found!"
+        });
+    }
 };
 
 module.exports = signUp;
