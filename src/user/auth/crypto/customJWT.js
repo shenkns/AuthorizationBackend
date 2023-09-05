@@ -37,6 +37,8 @@ class customJWT
 
     // JWT sign
     static sign(id, session) {
+        console.log("Custom JWT session " + session + " signed for " + id)
+
         return jwt.sign({ id: id, session: session}, accessTokenSecret);
     };
 };

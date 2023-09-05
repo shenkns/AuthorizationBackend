@@ -1,6 +1,9 @@
 // Crypto
 const customJWT = require('./crypto/customJWT');
 
+// Init UUID
+const { randomUUID } = require('crypto');
+
 // Init User schema
 const User = require.main.require('./src/user/models/user.js');
 
@@ -28,7 +31,9 @@ const signInGuest = async function(request, response) {
             return;
         }
 
-        const accessToken = customJWT.sign(user._id);
+        console.log(user.sessions[0]);
+
+        const accessToken = customJWT.sign(user._id, user.sessions[0]);
 
         response.status(200).json({
             id: user._id,
@@ -40,9 +45,13 @@ const signInGuest = async function(request, response) {
 
     user = new User({ name: "Player1234", accountType: 0, deviceId: userDeviceId });
 
+    const session = randomUUID();
+    user.sessions.push(session);
+    сonsole.log(user.sessions);
+
     await user.save();
 
-    const accessToken = customJWT.sign(user._id);
+    const accessToken = customJWT.sign(user._id, session);
 
     response.status(200).json({
         id: user._id,

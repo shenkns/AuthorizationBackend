@@ -33,6 +33,9 @@ const signUp = async function(request, response) {
 
     const user = await User.findById(request.session.id);
     if(user) {
+
+        console.log(user.sessions);
+
         if(user.accountType != 0)
         {
             response.status(409).json({
