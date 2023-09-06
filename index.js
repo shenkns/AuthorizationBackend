@@ -53,6 +53,9 @@ app.post('/user/auth/sign-in-email', customJWT.authenticateJWT, customJWT.verify
 const resetPassword = require('./src/user/auth/resetPassword.js');
 app.post('/user/auth/reset-password', customJWT.authenticateJWT, customJWT.verifySession, resetPassword);
 
+const deleteSession = require('./src/user/auth/deleteSession.js');
+app.post('/user/auth/delete-session', customJWT.authenticateJWT, customJWT.verifySession, deleteSession);
+
 const getName = require('./src/user/getName.js');
 app.post('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, getName);
 
