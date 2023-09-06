@@ -54,13 +54,13 @@ const resetPassword = require('./src/user/auth/resetPassword.js');
 app.post('/user/auth/reset-password', customJWT.authenticateJWT, customJWT.verifySession, resetPassword);
 
 const getSessions = require('./src/user/auth/sessions/getSessions.js');
-app.post('/user/auth/sessions/get-sessions', customJWT.authenticateJWT, customJWT.verifySession, getSessions);
+app.get('/user/auth/sessions/get-sessions', customJWT.authenticateJWT, customJWT.verifySession, getSessions);
 
 const deleteSession = require('./src/user/auth/sessions/deleteSession.js');
 app.post('/user/auth/sessions/delete-session', customJWT.authenticateJWT, customJWT.verifySession, deleteSession);
 
 const getName = require('./src/user/getName.js');
-app.post('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, getName);
+app.get('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, getName);
 
 // Server start
 main();

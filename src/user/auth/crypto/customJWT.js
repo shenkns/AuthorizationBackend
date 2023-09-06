@@ -22,7 +22,7 @@ class customJWT
             jwt.verify(token, accessTokenSecret, (error, session) => {
                 if (error || !session || !session.id || !session.session) {
                     return response.status(403).json({
-                        message: "No access!"
+                        message: "No access, bad parser token!"
                     });
                 }
 
@@ -44,7 +44,7 @@ class customJWT
 
         if(!userId) {
             response.status(400).json({
-                message: "No id field in request!"
+                message: "No id field in JWT token header!"
             });
             return;
         }
@@ -66,7 +66,7 @@ class customJWT
         }
         else {
             response.status(404).json({
-                message: "User not found, invalid id!"
+                message: "User not found, invalid id in JWT token!"
             });
             return;
         }
