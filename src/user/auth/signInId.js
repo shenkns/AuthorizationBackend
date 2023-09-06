@@ -34,6 +34,13 @@ const signInId = async function(request, response) {
             return;
         }
 
+        if(request.session.id === userId) {
+            response.status(409).json({
+                message: "You're already logged in!"
+            });
+            return;
+        }
+
         if(user.password && user.password === userPassword) {
             const session = randomUUID();
             user.sessions.push(session);
