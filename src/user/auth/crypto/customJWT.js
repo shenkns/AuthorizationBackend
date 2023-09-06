@@ -54,7 +54,7 @@ class customJWT
         {
             console.log(request.session.session);
             console.log(user.sessions);
-            if(user.sessions.find((element) => element === request.session.session)) {
+            if(user.sessions.includes(request.session.session)) {
                 next();
             }
             else {
