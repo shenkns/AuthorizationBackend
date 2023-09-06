@@ -245,8 +245,102 @@
           }
         }
       },
-      "/user/get-name": {
+      "/user/auth/sessions/get-sessions": {
+        "get": {
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Get Session",
+          "description": "Get Session",
+          "operationId": "get-sessions",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Should be empty, all needed data in access token in header"
+          },
+          "required": true,
+          "responses": {
+            "200": {
+              "description": "Sessions got"
+            },
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token | User not found"
+            }
+          }
+        }
+      },
+      "/user/auth/sessions/delete-session": {
         "post": {
+          "tags": [
+            "Authorization"
+          ],
+          "summary": "Delete Session",
+          "description": "Delete Session",
+          "operationId": "delete-session",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "User ID",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/getName"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Session deleted"
+            },
+            "400": {
+              "description": "No id field in JWT token header | No session field in request"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token | User not found, invalid id | Deleting session not found"
+            },
+            "409": {
+              "description": "Can't delete current session from itself"
+            }
+          }
+        }
+      },
+      "/user/get-name": {
+        "get": {
           "tags": [
             "User Info"
           ],
@@ -297,131 +391,143 @@
     },
     "components": {
       "schemas": {
-        "signInGuest": {
-          "required": [
-            "deviceId"
-          ],
-          "type": "object",
-          "properties": {
-            "deviceId": {
-              "type": "string"
-            }
+      "signInGuest": {
+        "required": [
+          "deviceId"
+        ],
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string"
           }
-        },
-        "signUp": {
-          "required": [
-            "name",
-            "password",
-            "email",
-            "deviceId"
-          ],
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "deviceId": {
-              "type": "string"
-            }
+        }
+      },
+      "signUp": {
+        "required": [
+          "name",
+          "password",
+          "email",
+          "deviceId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "deviceId": {
+            "type": "string"
           }
-        },
-        "signInEmail": {
-          "required": [
-            "email",
-            "password"
-          ],
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            }
+        }
+      },
+      "signInEmail": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
           }
-        },
-        "signInId": {
-          "required": [
-            "id",
-            "password"
-          ],
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            }
+        }
+      },
+      "signInId": {
+        "required": [
+          "id",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
           }
-        },
-        "resetPassword": {
-          "required": [
-            "id",
-            "oldPassword",
-            "newPassword"
-          ],
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "oldPassword": {
-              "type": "string"
-            },
-            "newPassword": {
-              "type": "string"
-            }
+        }
+      },
+      "resetPassword": {
+        "required": [
+          "id",
+          "oldPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
           }
-        },
-        "getName": {
-          "required": [
-            "id"
-          ],
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
+        }
+      },
+      "deleeteSession": {
+        "required": [
+          "session"
+        ],
+        "type": "object",
+        "properties": {
+          "session": {
+            "type": "string"
           }
-        },
-        "authorizationSchema": {
-          "type": "string",
-          "example": "Bearer <YOUR_API_KEY_TOKEN>"
-        },
-        "userSchema": {
-          "required": [
-            "name",
-            "email",
-            "password",
-            "accountType",
-            "deviceId"
-          ],
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            },
-            "accountType": {
-              "type": "number"
-            },
-            "deviceId": {
-              "type": "string"
-            }
+        }
+      },
+      "getName": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "authorizationSchema": {
+        "type": "string",
+        "example": "Bearer <YOUR_API_KEY_TOKEN>",
+        "description": "JWT token storing user id and session"
+      },
+      "userSchema": {
+        "required": [
+          "name",
+          "email",
+          "password",
+          "accountType",
+          "deviceId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "number"
+          },
+          "deviceId": {
+            "type": "string"
           }
         }
       }
     }
   }
+}
