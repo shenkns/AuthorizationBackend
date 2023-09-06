@@ -1,5 +1,9 @@
 // Crypto
 const customMD5 = require('./crypto/customMD5.js');
+const customJWT = require('./crypto/customJWT.js');
+
+// Init UUID
+const { randomUUID } = require('crypto');
 
 // Init User schema
 const User = require.main.require('./src/user/models/user.js');
@@ -33,9 +37,6 @@ const signUp = async function(request, response) {
 
     const user = await User.findById(request.session.id);
     if(user) {
-
-        console.log(user.sessions);
-
         if(user.accountType != 0)
         {
             response.status(409).json({
@@ -57,9 +58,17 @@ const signUp = async function(request, response) {
         user.email = userEmail;
         user.password = userPassword;
 
+        user.sessions = [];
+        const session = randomUUID();
+        user.sessions.push(session);
+
         await user.save();
+
+        const accessToken = customJWT.sign(user._id, session);
+
         response.status(200).json({
             id: user._id,
+            accessToken: accessToken,
             message: "Successful signed up!"
         });
     }

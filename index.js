@@ -42,19 +42,19 @@ const signInGuest = require('./src/user/auth/signInGuest.js');
 app.post('/user/auth/sign-in-guest', signInGuest);
 
 const signUp = require('./src/user/auth/signUp.js');
-app.post('/user/auth/sign-up', customJWT.authenticateJWT, signUp);
+app.post('/user/auth/sign-up', customJWT.authenticateJWT, customJWT.verifySession, signUp);
 
 const signInId = require('./src/user/auth/signInId.js');
-app.post('/user/auth/sign-in-id', customJWT.authenticateJWT, signInId);
+app.post('/user/auth/sign-in-id', customJWT.authenticateJWT, customJWT.verifySession, signInId);
 
 const signInEmail = require('./src/user/auth/signInEmail.js');
-app.post('/user/auth/sign-in-email', customJWT.authenticateJWT, signInEmail);
+app.post('/user/auth/sign-in-email', customJWT.authenticateJWT, customJWT.verifySession, signInEmail);
 
 const resetPassword = require('./src/user/auth/resetPassword.js');
-app.post('/user/auth/reset-password', customJWT.authenticateJWT, resetPassword);
+app.post('/user/auth/reset-password', customJWT.authenticateJWT, customJWT.verifySession, resetPassword);
 
 const getName = require('./src/user/getName.js');
-app.post('/user/get-name', customJWT.authenticateJWT, getName);
+app.post('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, getName);
 
 // Server start
 main();

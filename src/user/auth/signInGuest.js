@@ -31,23 +31,30 @@ const signInGuest = async function(request, response) {
             return;
         }
 
-        console.log(user.sessions[0]);
+        if(user.sessions.length > 0) {
+            console.log(user.sessions[0]);
 
-        const accessToken = customJWT.sign(user._id, user.sessions[0]);
+            const accessToken = customJWT.sign(user._id, user.sessions[0]);
 
-        response.status(200).json({
-            id: user._id,
-            accessToken: accessToken,
-            message: "Account on this device found, successful signed in!"
-        });
-        return;
+            response.status(200).json({
+                id: user._id,
+                accessToken: accessToken,
+                message: "Account on this device found, successful signed in!"
+            });
+            return;
+        }
+        else {
+            response.status(401).json({
+                message: "No active sessions!"
+            });
+            return;
+        }
     }
 
     user = new User({ name: "Player1234", accountType: 0, deviceId: userDeviceId });
 
     const session = randomUUID();
     user.sessions.push(session);
-    сonsole.log(user.sessions);
 
     await user.save();
 

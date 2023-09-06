@@ -2,6 +2,9 @@
 const customMD5 = require('./crypto/customMD5.js');
 const customJWT = require('./crypto/customJWT.js');
 
+// Init UUID
+const { randomUUID } = require('crypto');
+
 // Init User schema
 const User = require.main.require('./src/user/models/user.js');
 
@@ -32,7 +35,14 @@ const signInId = async function(request, response) {
         }
 
         if(user.password && user.password === userPassword) {
-            const accessToken = customJWT.sign(user._id);
+            const session = randomUUID();
+            user.sessions.push(session);
+
+            console.log(user.sessions);
+
+            await user.save();
+
+            const accessToken = customJWT.sign(user._id, session);
 
             response.status(200).json({
                 accessToken: accessToken,

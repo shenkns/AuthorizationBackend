@@ -2,6 +2,9 @@
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = '_p=$%4-X-i!5p*lgdQbFmVBtmn=mxPC*jz6K$7$GAcw$bmcOcYJd8OOwJ*xDkv=n';
 
+// Init User schema
+const User = require.main.require('./src/user/models/user.js');
+
 // Custom JWT class
 class customJWT
 {
@@ -32,6 +35,40 @@ class customJWT
             response.status(401).json({
                 message: "No authorization header!"
             });
+        }
+    };
+
+    // JWT session verifier
+    static async verifySession(request, response, next) {
+        const userId = request.session.id;
+
+        if(!userId) {
+            response.status(400).json({
+                message: "No id field in request!"
+            });
+            return;
+        }
+
+        const user = await User.findById(userId);
+        if(user)
+        {
+            console.log(request.session.session);
+            console.log(user.sessions);
+            if(user.sessions.find((element) => element === request.session.session)) {
+                next();
+            }
+            else {
+                response.status(403).json({
+                    message: "Invalid session!"
+                });
+            }
+            return;
+        }
+        else {
+            response.status(404).json({
+                message: "User not found, invalid id!"
+            });
+            return;
         }
     };
 

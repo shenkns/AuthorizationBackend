@@ -2,6 +2,9 @@
 const customMD5 = require('./crypto/customMD5.js');
 const customJWT = require('./crypto/customJWT.js');
 
+// Init UUID
+const { randomUUID } = require('crypto');
+
 // Init User schema
 const User = require.main.require('./src/user/models/user.js');
 
@@ -11,18 +14,19 @@ const resetPassword = async function(request, response) {
     console.log(request.body);
 
     const userId = request.body.id;
-    var oldPassword = request.body.oldPassword;
-    var newPassword = request.body.newPassword;
+    var userOldPassword = request.body.oldPassword;
+    var userNewPassword = request.body.newPassword;
+    const userResetSessions = request.body.resetSessions;
 
-    if(!userId || !oldPassword || !newPassword) {
+    if(!userId || !userOldPassword || !userNewPassword) {
         response.status(400).json({
             message: "No id or oldPassword or newPassword field in request!"
         });
         return;
     }
 
-    oldPassword = customMD5(oldPassword);
-    newPassword = customMD5(newPassword);
+    userOldPassword = customMD5(userOldPassword);
+    userNewPassword = customMD5(userNewPassword);
 
     if(!(request.session.id === userId)) {
         response.status(403).json({
@@ -40,23 +44,37 @@ const resetPassword = async function(request, response) {
             return;
         }
 
-        if(user.password && user.password === oldPassword) {
-            if(oldPassword === newPassword) {
+        if(user.password && user.password === userOldPassword) {
+            if(userOldPassword === userNewPassword) {
                 response.status(409).json({
                     message: "New password equals old!"
                 });
                 return;
             }
 
-            user.password = newPassword;
-            await user.save();
+            user.password = userNewPassword;
 
-            const accessToken = customJWT.sign(user._id);
+            if(userResetSessions == 1) {
+                user.sessions = [];
+                const session = randomUUID();
+                user.sessions.push(session);
 
-            response.status(200).json({
-                accessToken: accessToken,
-                message: "Password successful changed!"
-            });
+                await user.save();
+
+                const accessToken = customJWT.sign(user._id, session);
+
+                response.status(200).json({
+                    accessToken: accessToken,
+                    message: "Password successful changed and sessions reset!"
+                });
+            }
+            else {
+                await user.save();
+
+                response.status(200).json({
+                    message: "Password successful changed!"
+                });
+            }
         }
         else {
             response.status(401).json({
