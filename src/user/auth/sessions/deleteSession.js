@@ -1,7 +1,7 @@
 // Init User schema
 const User = require.main.require('./src/user/models/user.js');
 
-// Listen /user/auth/delete-session path
+// Listen /user/auth/sessions/delete-session path
 const deleteSession = async function(request, response) {
     console.log(request.url);
     console.log(request.body);
