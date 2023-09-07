@@ -77,5 +77,11 @@ app.post('/user/friends/delete-friend', customJWT.authenticateJWT, customJWT.ver
 const getFriends = require('./src/user/friends/getFriends.js');
 app.get('/user/friends/get-friends', customJWT.authenticateJWT, customJWT.verifySession, getFriends);
 
+const getIncomingFriendRequests = require('./src/user/friends/getIncomingFriendRequests.js');
+app.get('/user/friends/get-incoming-friend-requests', customJWT.authenticateJWT, customJWT.verifySession, getIncomingFriendRequests);
+
+const getOutgoingFriendRequests = require('./src/user/friends/getOutgoingFriendRequests.js');
+app.get('/user/friends/get-outgoing-friend-requests', customJWT.authenticateJWT, customJWT.verifySession, getOutgoingFriendRequests);
+
 // Server start
 main();

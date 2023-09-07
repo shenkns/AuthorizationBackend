@@ -6,13 +6,15 @@ const getFriends = async function(request, response) {
     console.log(request.url);
     console.log(request.body);
 
-    const user = User.findById(request.session.id);
+    const user = await User.findById(request.session.id);
     if(!user) {
         response.status(404).json({
             message: "User not found!"
         });
         return;
     }
+
+    console.log(user.friends);
 
     response.status(200).json({
         friends: user.friends,
