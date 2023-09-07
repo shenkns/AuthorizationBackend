@@ -6,7 +6,8 @@ const userSchema = mongoose.Schema({
     password: String,
     accountType: Number,
     deviceId: String,
-    sessions: [String]
+    sessions: [String],
+    friends: [String]
 }, {versionKey: false});
 
 const User = mongoose.model('User', userSchema);
