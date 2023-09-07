@@ -37,7 +37,7 @@ const sendFriendRequest = async function(request, response) {
         return;
     }
 
-    var friendRequest = await FriendRequest.findOne($or[{from: request.session.id, to: id}, {to: request.session.id, from: id}]);
+    var friendRequest = await FriendRequest.findOne({$or: [{from: request.session.id, to: id}, {to: request.session.id, from: id}]});
     if(friendRequest) {
         response.status(409).json({
             message: "Request already sent to this user!"
@@ -45,6 +45,8 @@ const sendFriendRequest = async function(request, response) {
         return;
     }
 
+    console.log(id);
+    console.log(request.session.id);
     friendRequest = new FriendRequest({ from: request.session.id, to: id });
     await friendRequest.save();
 

@@ -65,5 +65,8 @@ app.get('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, ge
 const sendFriendRequest = require('./src/user/friends/sendFriendRequest.js');
 app.post('/user/friends/send-friend-request', customJWT.authenticateJWT, customJWT.verifySession, sendFriendRequest);
 
+const acceptFriendRequest = require('./src/user/friends/acceptFriendRequest.js');
+app.post('/user/friends/accept-friend-request', customJWT.authenticateJWT, customJWT.verifySession, acceptFriendRequest);
+
 // Server start
 main();
