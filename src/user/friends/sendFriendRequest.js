@@ -30,6 +30,13 @@ const sendFriendRequest = async function(request, response) {
         });
     }
 
+    if(user.friends.includes(request.session.id)) {
+        response.status(409).json({
+            message: "This user already your friend!"
+        });
+        return;
+    }
+
     var friendRequest = await FriendRequest.findOne({ from: request.session.id, to: id });
     if(friendRequest) {
         response.status(409).json({
