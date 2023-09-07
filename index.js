@@ -68,5 +68,8 @@ app.post('/user/friends/send-friend-request', customJWT.authenticateJWT, customJ
 const acceptFriendRequest = require('./src/user/friends/acceptFriendRequest.js');
 app.post('/user/friends/accept-friend-request', customJWT.authenticateJWT, customJWT.verifySession, acceptFriendRequest);
 
+const declineFriendRequest = require('./src/user/friends/declineFriendRequest.js');
+app.post('/user/friends/decline-friend-request', customJWT.authenticateJWT, customJWT.verifySession, declineFriendRequest);
+
 // Server start
 main();
