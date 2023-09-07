@@ -62,5 +62,8 @@ app.post('/user/auth/sessions/delete-session', customJWT.authenticateJWT, custom
 const getName = require('./src/user/getName.js');
 app.get('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, getName);
 
+const sendFriendRequest = require('./src/user/friends/sendFriendRequest.js');
+app.post('/user/friends/send-friend-request', customJWT.authenticateJWT, customJWT.verifySession, sendFriendRequest);
+
 // Server start
 main();
