@@ -74,5 +74,8 @@ app.post('/user/friends/decline-friend-request', customJWT.authenticateJWT, cust
 const deleteFriend = require('./src/user/friends/deleteFriend.js');
 app.post('/user/friends/delete-friend', customJWT.authenticateJWT, customJWT.verifySession, deleteFriend);
 
+const getFriends = require('./src/user/friends/getFriends.js');
+app.get('/user/friends/get-friends', customJWT.authenticateJWT, customJWT.verifySession, getFriends);
+
 // Server start
 main();
