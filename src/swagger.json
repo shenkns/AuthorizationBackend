@@ -311,7 +311,7 @@
             "content": {
               "application/x-www-form-urlencoded": {
                 "schema": {
-                  "$ref": "#/components/schemas/getName"
+                  "$ref": "#/components/schemas/deleteSession"
                 }
               }
             },
@@ -335,6 +335,298 @@
             },
             "409": {
               "description": "Can't delete current session from itself"
+            }
+          }
+        }
+      },
+      "/user/friends/send-friend-request": {
+        "post": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Send Friend Request",
+          "description": "Send Friend Request",
+          "operationId": "send-friend-request",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "User ID",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/sendFriendRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header | No id field in request"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            },
+            "409": {
+              "description": "Conflict, can't send friend request to yourself"
+            }
+          }
+        }
+      },
+      "/user/friends/accept-friend-request": {
+        "post": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Accept Friend Request",
+          "description": "Accept Friend Request",
+          "operationId": "accept-friend-request",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Friend Request ID",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/acceptFriendRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            }
+          }
+        }
+      },
+      "/user/friends/decline-friend-request": {
+        "post": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Decline Friend Request",
+          "description": "Decline Friend Request",
+          "operationId": "decline-friend-request",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "User ID",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/declineFriendRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            }
+          }
+        }
+      },
+      "/user/friends/delete-friend": {
+        "post": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Delete Friend",
+          "description": "Delete Friend",
+          "operationId": "delete-friend",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "User ID",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/deleteFriend"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            }
+          }
+        }
+      },
+      "/user/friends/get-Friends": {
+        "get": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Get Friends",
+          "description": "Get Friends",
+          "operationId": "get-friends",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            }
+          }
+        }
+      },
+      "/user/friends/get-incoming-friend-requests": {
+        "get": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Get Incoming Friend Requests",
+          "description": "Get Incoming Friend Requests",
+          "operationId": "get-incoming-friend-requests",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            }
+          }
+        }
+      },
+      "/user/friends/get-outgoing-friend-requests": {
+        "get": {
+          "tags": [
+            "Friends"
+          ],
+          "summary": "Get Outgoing Friend Requests",
+          "description": "Get Outgoing Friend Requests",
+          "operationId": "get-outgoing-friend-requests",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "responses": {
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
             }
           }
         }
@@ -474,13 +766,57 @@
           }
         }
       },
-      "deleeteSession": {
+      "deleteSession": {
         "required": [
           "session"
         ],
         "type": "object",
         "properties": {
           "session": {
+            "type": "string"
+          }
+        }
+      },
+      "sendFriendRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "acceptFriendRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "declineFriendRequest": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "deleteFriend": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "string"
           }
         }
@@ -503,14 +839,20 @@
       },
       "userSchema": {
         "required": [
+          "_id",
           "name",
           "email",
           "password",
           "accountType",
-          "deviceId"
+          "deviceId",
+          "sessions",
+          "friends"
         ],
         "type": "object",
         "properties": {
+          "_id": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           },
@@ -524,6 +866,37 @@
             "type": "number"
           },
           "deviceId": {
+            "type": "string"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "friends": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "friendRequestSchema": {
+        "required": [
+          "_id",
+          "from",
+          "to"
+        ],
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
             "type": "string"
           }
         }
