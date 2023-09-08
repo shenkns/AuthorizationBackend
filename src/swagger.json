@@ -370,6 +370,9 @@
             "required": true
           },
           "responses": {
+            "200": {
+              "description": "Friend request successful sent"
+            },
             "400": {
               "description": "No id field in JWT token header | No id field in request"
             },
@@ -380,10 +383,10 @@
               "description": "No access, bad parser token | Invalid session"
             },
             "404": {
-              "description": "User not found, invalid id in JWT token"
+              "description": "User not found, invalid id in JWT token | User not found"
             },
             "409": {
-              "description": "Conflict, can't send friend request to yourself"
+              "description": "Conflict, can't send friend request to yourself | This user already your friend | Request already sent to this user"
             }
           }
         }
@@ -419,17 +422,20 @@
             "required": true
           },
           "responses": {
+            "200": {
+              "description": "Friend request accepted"
+            },
             "400": {
-              "description": "No id field in JWT token header"
+              "description": "No id field in JWT token header | No id field in request"
             },
             "401": {
               "description": "No authorization header"
             },
             "403": {
-              "description": "No access, bad parser token | Invalid session"
+              "description": "No access, bad parser token | Invalid session | Can't accept not owning friend request"
             },
             "404": {
-              "description": "User not found, invalid id in JWT token"
+              "description": "User not found, invalid id in JWT token | Friend request not found | User not found | Friend not found"
             }
           }
         }
@@ -465,17 +471,20 @@
             "required": true
           },
           "responses": {
+            "200": {
+              "description": "Can't decline not owning friend request"
+            },
             "400": {
-              "description": "No id field in JWT token header"
+              "description": "No id field in JWT token header | No id field in request"
             },
             "401": {
               "description": "No authorization header"
             },
             "403": {
-              "description": "No access, bad parser token | Invalid session"
+              "description": "No access, bad parser token | Invalid session | Can't decline not owning friend request"
             },
             "404": {
-              "description": "User not found, invalid id in JWT token"
+              "description": "User not found, invalid id in JWT token | Friend request not found"
             }
           }
         }
@@ -511,8 +520,11 @@
             "required": true
           },
           "responses": {
+            "200": {
+              "description": "Friend deleted"
+            },
             "400": {
-              "description": "No id field in JWT token header"
+              "description": "No id field in JWT token header | No id field in request"
             },
             "401": {
               "description": "No authorization header"
@@ -521,7 +533,10 @@
               "description": "No access, bad parser token | Invalid session"
             },
             "404": {
-              "description": "User not found, invalid id in JWT token"
+              "description": "User not found, invalid id in JWT token | User not found | Friend not found"
+            },
+            "409": {
+              "description": "Failed to delete, this user not your friend"
             }
           }
         }
@@ -546,6 +561,9 @@
             }
           ],
           "responses": {
+            "200": {
+              "description": "Friends got"
+            },
             "400": {
               "description": "No id field in JWT token header"
             },
@@ -556,7 +574,7 @@
               "description": "No access, bad parser token | Invalid session"
             },
             "404": {
-              "description": "User not found, invalid id in JWT token"
+              "description": "User not found, invalid id in JWT token | User not found"
             }
           }
         }
@@ -581,6 +599,9 @@
             }
           ],
           "responses": {
+            "200": {
+              "description": "Incoming friend requests got"
+            },
             "400": {
               "description": "No id field in JWT token header"
             },
@@ -616,6 +637,9 @@
             }
           ],
           "responses": {
+            "200": {
+              "description": "Outgoing friend requests got"
+            },
             "400": {
               "description": "No id field in JWT token header"
             },

@@ -26,7 +26,7 @@ const sendFriendRequest = async function(request, response) {
     const user = await User.findById(id);
     if(!user) {
         response.status(404).json({
-            message: "User no found!"
+            message: "User not found!"
         });
     }
 

@@ -29,7 +29,7 @@ const acceptFriendRequest = async function(request, response) {
 
     if(!(friendRequest.to === request.session.id)) {
         response.status(403).json({
-            message: "Can't accept not owning friend request"
+            message: "Can't accept not owning friend request!"
         });
         return;
     }
