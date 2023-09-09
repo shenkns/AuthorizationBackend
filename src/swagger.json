@@ -339,6 +339,107 @@
           }
         }
       },
+      "/user/get-name": {
+        "get": {
+          "tags": [
+            "User Info"
+          ],
+          "summary": "Get user name",
+          "description": "Get user name",
+          "operationId": "get-name",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "User ID",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/getName"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Name got"
+            },
+            "400": {
+              "description": "No id field in request"
+            },
+            "401": {
+              "description": "No access"
+            },
+            "403": {
+              "description": "No Authorization header"
+            },
+            "404": {
+              "description": "User not found"
+            }
+          }
+        }
+      },
+      "/user/change-name": {
+        "post": {
+          "tags": [
+            "User Info"
+          ],
+          "summary": "Change user name",
+          "description": "Change user name",
+          "operationId": "change-name",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "New name",
+            "content": {
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/changeName"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Name changed"
+            },
+            "400": {
+              "description": "No id field in JWT token header | No name field in request"
+            },
+            "401": {
+              "description": "No authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token | User not found"
+            },
+            "409": {
+              "description": "Conflict old name equals new"
+            }
+          }
+        }
+      },
       "/user/friends/send-friend-request": {
         "post": {
           "tags": [
@@ -654,55 +755,6 @@
             }
           }
         }
-      },
-      "/user/get-name": {
-        "get": {
-          "tags": [
-            "User Info"
-          ],
-          "summary": "Get user name",
-          "description": "Get user name",
-          "operationId": "get-name",
-          "parameters": [
-            {
-              "name": "Authorization",
-              "in": "header",
-              "description": "API key token",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/authorizationSchema"
-              }
-            }
-          ],
-          "requestBody": {
-            "description": "User ID",
-            "content": {
-              "application/x-www-form-urlencoded": {
-                "schema": {
-                  "$ref": "#/components/schemas/getName"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Name got"
-            },
-            "400": {
-              "description": "No id field in request"
-            },
-            "401": {
-              "description": "No access"
-            },
-            "403": {
-              "description": "No Authorization header"
-            },
-            "404": {
-              "description": "User not found"
-            }
-          }
-        }
       }
     },
     "components": {
@@ -801,6 +853,28 @@
           }
         }
       },
+      "getName": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "changeName": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "sendFriendRequest": {
         "required": [
           "id"
@@ -835,17 +909,6 @@
         }
       },
       "deleteFriend": {
-        "required": [
-          "id"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          }
-        }
-      },
-      "getName": {
         "required": [
           "id"
         ],
