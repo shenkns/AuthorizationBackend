@@ -12,6 +12,11 @@ app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw({ extended: true }));
 
+// Init files upload
+const fileUpload = require('express-fileupload');
+app.use(fileUpload({}));
+app.use(express.static('static'));
+
 // Init Crypto
 const customJWT = require('./src/user/auth/crypto/customJWT.js');
 
@@ -64,6 +69,9 @@ app.get('/user/get-name', customJWT.authenticateJWT, customJWT.verifySession, ge
 
 const changeName = require('./src/user/changeName.js');
 app.post('/user/change-name', customJWT.authenticateJWT, customJWT.verifySession, changeName);
+
+const uploadAvatar = require('./src/user/avatar/uploadAvatar.js');
+app.post('/user/avatar/upload-avatar', customJWT.authenticateJWT, customJWT.verifySession, uploadAvatar);
 
 const sendFriendRequest = require('./src/user/friends/sendFriendRequest.js');
 app.post('/user/friends/send-friend-request', customJWT.authenticateJWT, customJWT.verifySession, sendFriendRequest);
