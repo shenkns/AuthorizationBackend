@@ -2,14 +2,13 @@
 const { randomUUID } = require('crypto');
 
 // Path
-const { dirname } = require('path');
 const fs = require('fs');
 const path = require('path');
 
 // Init User schema
 const User = require.main.require('./src/user/models/user.js');
 
-// Listen /user/auth/sign-up path
+// Listen /user/avatar/upload-avatar path
 const uploadAvatar = async function(request, response) {
     console.log(request.url);
     console.log(request.body);
@@ -31,15 +30,18 @@ const uploadAvatar = async function(request, response) {
         return;
     }
 
-    const avatarName = randomUUID() + ".jpg";
-    
     const staticDir = path.dirname(require.main.filename) + '\\static\\';
+
+    if(user.avatar) {
+        fs.unlinkSync(staticDir + user.avatar);
+        user.avatar = null;
+    }
+    
     if(!fs.existsSync(staticDir)) {
         fs.mkdirSync(staticDir);
     }
 
-    console.log(staticDir);
-
+    const avatarName = randomUUID() + ".jpg";
     console.log(staticDir + avatarName);
     avatar.mv(staticDir + avatarName);
 
