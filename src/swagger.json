@@ -59,7 +59,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -111,7 +111,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -160,7 +160,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -209,7 +209,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -258,7 +258,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -300,7 +300,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -352,7 +352,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -401,7 +401,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -440,6 +440,91 @@
           }
         }
       },
+      "/user/upload-avatar": {
+        "post": {
+          "tags": [
+            "Avatar"
+          ],
+          "summary": "Upload Avatar",
+          "description": "Upload Avatar",
+          "operationId": "upload-avatar",
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            },
+            {
+              "name": "avatar",
+              "in": "multipart/form-data",
+              "required": true,
+              "type": "file"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Avatar uploaded"
+            },
+            "400": {
+              "description": "No id field in JWT token header | No avatar field in request"
+            },
+            "401": {
+              "description": "No Authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token | User not found"
+            }
+          }
+        }
+      },
+      "/user/delete-avatar": {
+        "post": {
+          "tags": [
+            "Avatar"
+          ],
+          "summary": "Delete Avatar",
+          "description": "Delete Avatar",
+          "operationId": "delete-avatar",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "in": "header",
+              "description": "API key token",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/authorizationSchema"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Nothing to delete, there are no avatar | Avatar deleted"
+            },
+            "400": {
+              "description": "No id field in JWT token header"
+            },
+            "401": {
+              "description": "No Authorization header"
+            },
+            "403": {
+              "description": "No access, bad parser token | Invalid session"
+            },
+            "404": {
+              "description": "User not found, invalid id in JWT token"
+            }
+          }
+        }
+      },
       "/user/friends/send-friend-request": {
         "post": {
           "tags": [
@@ -453,7 +538,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -505,7 +590,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -554,7 +639,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -603,7 +688,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -655,7 +740,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -693,7 +778,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
@@ -731,7 +816,7 @@
               "name": "Authorization",
               "in": "header",
               "description": "API key token",
-              "required": false,
+              "required": true,
               "schema": {
                 "$ref": "#/components/schemas/authorizationSchema"
               }
