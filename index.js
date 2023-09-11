@@ -73,6 +73,9 @@ app.post('/user/change-name', customJWT.authenticateJWT, customJWT.verifySession
 const uploadAvatar = require('./src/user/avatar/uploadAvatar.js');
 app.post('/user/avatar/upload-avatar', customJWT.authenticateJWT, customJWT.verifySession, uploadAvatar);
 
+const deleteAvatar = require('./src/user/avatar/deleteAvatar.js');
+app.post('/user/avatar/delete-avatar', customJWT.authenticateJWT, customJWT.verifySession, deleteAvatar);
+
 const sendFriendRequest = require('./src/user/friends/sendFriendRequest.js');
 app.post('/user/friends/send-friend-request', customJWT.authenticateJWT, customJWT.verifySession, sendFriendRequest);
 
