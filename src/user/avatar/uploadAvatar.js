@@ -49,6 +49,7 @@ const uploadAvatar = async function(request, response) {
     await user.save();
 
     response.status(200).json({
+        avatar: avatarName,
         message: "Avatar uploaded!"
     });
 };
